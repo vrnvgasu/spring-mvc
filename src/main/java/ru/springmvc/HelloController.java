@@ -11,4 +11,5 @@ public class HelloController {
     // возвращаем представление src/main/webapp/WEB-INF/views/hello_world.html
     return "hello_world";
   }
+
 }
