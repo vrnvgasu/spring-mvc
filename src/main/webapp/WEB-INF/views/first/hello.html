@@ -10,6 +10,10 @@ Hello!
 <br>
 <a href="/first/goodbye">Say goodbye</a><br>
 <a href="/exit">Exit</a><br>
-<a href="/first/hello?name=Test&surname=Testov">Request with params</a>
+<a href="/first/hello?name=Test&surname=Testov ">Request with params</a>
+
+<!--Шаблонизатор thymeleaf обратиться к объекту модели и считает из него значение по ключу message-->
+<p th:text="${message}" /><!--Сгенерит <p>Hello, Test Testov</p>-->
+
 </body>
 </html>
