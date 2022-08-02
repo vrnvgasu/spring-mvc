@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Все люди</title>
+</head>
+<body>
+
+<!--thymeleaf - перебор коллекции и свойства модели-->
+<!--people - коллекция-->
+<!--person - переменная в цикле -->
+<div th:each="person : ${people}">
+    <!--th:text="${person} заменим содержимое ссылки на переменную person -->
+    <!--th:text="@(/people/{id}(id=${person.getId()})) - генерим ссылку и указываем,
+        откуда берется в ней id-->
+    <a th:href="@{/people/{id}(id=${person.getId()})}" th:text="${person.getName()}">user</a>
+</div>
+
+</body>
+</html>
