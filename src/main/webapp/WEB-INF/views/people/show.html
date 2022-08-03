@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Человек </title>
@@ -9,6 +9,12 @@
 <!--Подставим данные из модели с помощью шаблонизатора thymeleaf-->
 <p th:text="${person.getName()}">VALUE</p>
 <p th:text="${person.getId()}">VALUE</p>
+<a th:href="@{/people/{id}/edit(id=${person.getId()})}">update</a>
+
+<!--кнопка на удаление в виде формы, тк url ловит запрос на DELETE-->
+<form th:method="DELETE" th:action="@{/people/{id}(id=${person.getId()})}" >
+    <input type="submit" value="DELETE"/>
+</form>
 
 </body>
 </html>

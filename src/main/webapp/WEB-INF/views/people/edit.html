@@ -4,17 +4,18 @@ IDE понимал, что используем-->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>New Person</title>
+    <title>Update Person</title>
 </head>
 <body>
 
 <!--th:object="${person} - название модели Person из Model-->
-<form th:method="POST" th:action="@{/people}" th:object="${person}">
+<!--th:method="PATCH" - метод POST + скрытое поле input со значением PATCH-->
+<form th:method="PATCH" th:action="@{/people/{id}(id=${person.getId()})}" th:object="${person}">
     <label for="name">Name:</label>
     <!--th:field="*{name} поля из person -->
      <input type="text" th:field="*{name}" id="name"/>
     <br>
-    <input type="submit" value="Create"/>
+    <input type="submit" value="Update"/>
 </form>
 
 </body>

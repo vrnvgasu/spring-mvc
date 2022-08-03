@@ -50,4 +50,23 @@ public class PeopleController {
     personDAO.save(person);
     return "redirect:/people";  // делаем редирект на index
   }
+
+  @GetMapping("/{id}/edit")
+  public String create(Model model, @PathVariable("id") int id) {
+    model.addAttribute("person", personDAO.show(id));
+    return "people/edit";
+  }
+
+  @PatchMapping("/{id}")
+  // @ModelAttribute подставит нужные поля из формы в person
+  public String update(@ModelAttribute("person") Person person, @PathVariable("id") int id) {
+    personDAO.update(id, person);
+    return "redirect:/people";  // делаем редирект на index
+  }
+
+  @DeleteMapping("/{id}")
+  public String delete(@PathVariable("id") int id) {
+    personDAO.delete(id);
+    return "redirect:/people";  // делаем редирект на index
+  }
 }
