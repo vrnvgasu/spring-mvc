@@ -67,6 +67,20 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Валидация REQUEST -->
+    <!--7 версия не работает-->
+<!--    <dependency>-->
+<!--      <groupId>org.hibernate.validator</groupId>-->
+<!--      <artifactId>hibernate-validator</artifactId>-->
+<!--      <version>7.0.4.Final</version>-->
+<!--    </dependency>-->
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>6.1.6.Final</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>

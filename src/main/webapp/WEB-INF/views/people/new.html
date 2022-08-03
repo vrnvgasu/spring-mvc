@@ -13,7 +13,23 @@ IDE понимал, что используем-->
     <label for="name">Name:</label>
     <!--th:field="*{name} поля из person -->
      <input type="text" th:field="*{name}" id="name"/>
+    <!--th:if - проверка условия-->
+    <!--#fields - доступ ко всем полям внедряемого объекта-->
+    <!--th:if="${#fields.hasErrors('name')}" th:errors="*{name}" -
+        если есть ошибка для поля name, то показать ошибку для поля name-->
+    <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">ERROR MESSAGE</div>
     <br>
+
+    <label for="age">Age:</label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">ERROR MESSAGE</div>
+    <br>
+
+    <label for="email">Email:</label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">ERROR MESSAGE</div>
+    <br>
+
     <input type="submit" value="Create"/>
 </form>
 

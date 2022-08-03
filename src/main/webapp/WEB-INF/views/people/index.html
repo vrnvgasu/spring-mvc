@@ -13,7 +13,8 @@
     <!--th:text="${person} заменим содержимое ссылки на переменную person -->
     <!--th:text="@(/people/{id}(id=${person.getId()})) - генерим ссылку и указываем,
         откуда берется в ней id-->
-    <a th:href="@{/people/{id}(id=${person.getId()})}" th:text="${person.getName()}">user</a>
+    <a th:href="@{/people/{id}(id=${person.getId()})}"
+       th:text="${person.getName()} + ',  ' + ${person.getAge()}">user</a>
 </div>
 
 <br>
