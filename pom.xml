@@ -80,6 +80,13 @@
       <version>6.1.6.Final</version>
     </dependency>
 
+    <!-- JDBC драйвер -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.5.0</version>
+    </dependency>
+
 
   </dependencies>
 

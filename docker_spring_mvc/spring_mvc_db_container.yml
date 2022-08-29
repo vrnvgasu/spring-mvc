@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  spring_mvc-db:
+    image: postgres
+    container_name: spring_mvc-db
+    environment:
+      - POSTGRES_PASSWORD=user
+      - POSTGRES_USER=user
+      - POSTGRES_DB=spring_mvc
+    ports:
+      - "5490:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data

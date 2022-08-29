@@ -1,0 +1,1 @@
+docker-compose --file "spring_mvc_db_container.yml" up --build -d
