@@ -1,11 +1,14 @@
 package ru.springmvc.config;
 
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -19,12 +22,18 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @Configuration
 @ComponentScan("ru.springmvc")  // пакет с компонентами <context:component-scan base-package="ru.springmvc"/>
 @EnableWebMvc // Включает необходимы аннотации для spring-mvc приложения <mvc:annotation-driven/>
+@PropertySource("classpath:database.properties") // путь до конфигов
 public class SpringConfig implements WebMvcConfigurer {
   private final ApplicationContext applicationContext;
 
+  // Environment - бин из спринга.
+  // С его помощью получаем свойства, которые подключили через @PropertySource
+  private final Environment environment;
+
   @Autowired
-  public SpringConfig(ApplicationContext applicationContext) {
+  public SpringConfig(ApplicationContext applicationContext, Environment environment) {
     this.applicationContext = applicationContext;
+    this.environment = environment;
   }
 
   // 2 бина и один переопределенный метод для шаблонизатора
@@ -58,10 +67,11 @@ public class SpringConfig implements WebMvcConfigurer {
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName("org.postgresql.Driver");
-    dataSource.setUrl("jdbc:postgresql://localhost:5490/spring_mvc");
-    dataSource.setUsername("user");
-    dataSource.setPassword("user");
+    // Objects.requireNonNull выкидываем ошибку, если свойство environment.getProperty("driver") содержит null
+    dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
+    dataSource.setUrl(environment.getProperty("url"));
+    dataSource.setUsername(environment.getProperty("username"));
+    dataSource.setPassword(environment.getProperty("password"));
 
     return dataSource;
   }
