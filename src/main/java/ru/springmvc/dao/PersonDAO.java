@@ -52,7 +52,7 @@ public class PersonDAO {
 
   public void save(Person person) {
     // update ожидает в качестве параметров в sql - @Nullable Object... args
-    jdbcTemplate.update("INSERT INTO person VALUES(1, ?, ?, ?)",
+    jdbcTemplate.update("INSERT INTO person (name, age, email) VALUES(?, ?, ?)",
       person.getName(), person.getAge(), person.getEmail());
   }
 
