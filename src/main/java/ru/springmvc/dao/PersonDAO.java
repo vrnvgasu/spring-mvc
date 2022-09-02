@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Component
 public class PersonDAO {
+
   // бин jdbcTemplate вместо JDBC API
   private final JdbcTemplate jdbcTemplate;
 
@@ -36,15 +38,24 @@ public class PersonDAO {
     return jdbcTemplate.query("SELECT * FROM person", new BeanPropertyRowMapper<>(Person.class));
   }
 
+  // Optional - обертка вокруг объектов, которые могут существовать или нет (null)
+  public Optional<Person> show(String email) {
+    return jdbcTemplate.query(
+            "SELECT * FROM person WHERE email=?", new Object[]{email}, new BeanPropertyRowMapper<>(Person.class))
+        // findAny - возвращает Optional: Optional<T> findAny();
+        .stream().findAny();
+  }
+
+
   public Person show(int id) {
     // в jdbcTemplate запрос всегда подготовленный
     // надо передать массив объектов со значения
     return jdbcTemplate.query(
-        "SELECT * FROM person WHERE id=?",
-        new Object[]{id},
+            "SELECT * FROM person WHERE id=?",
+            new Object[]{id},
 //        new PersonMapper()
-        new BeanPropertyRowMapper<>(Person.class)
-    )
+            new BeanPropertyRowMapper<>(Person.class)
+        )
         // получили из запроса коллекцию Person
         // вернули первый элемент или null
         .stream().findAny().orElse(null);
@@ -53,12 +64,14 @@ public class PersonDAO {
   public void save(Person person) {
     // update ожидает в качестве параметров в sql - @Nullable Object... args
     jdbcTemplate.update("INSERT INTO person (name, age, email) VALUES(?, ?, ?)",
-      person.getName(), person.getAge(), person.getEmail());
+        person.getName(), person.getAge(), person.getEmail()
+    );
   }
 
   public void update(int id, Person updatedPerson) {
     jdbcTemplate.update("UPDATE person set name=?, age=?, email=? WHERE id=?",
-        updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id);
+        updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id
+    );
   }
 
   public void delete(int id) {
@@ -100,7 +113,8 @@ public class PersonDAO {
 
     long before = System.currentTimeMillis();
     people.forEach(person -> jdbcTemplate.update("INSERT INTO person VALUES(?, ?, ?, ?)",
-        person.getId(), person.getName(), person.getAge(), person.getEmail()));
+        person.getId(), person.getName(), person.getAge(), person.getEmail()
+    ));
     long after = System.currentTimeMillis();
 
     System.out.println("Time testMultipleUpdate: " + (after - before));
@@ -111,7 +125,7 @@ public class PersonDAO {
 
     for (int i = 0; i < 1000; i++) {
       Person person = new Person(i, "Name" + i, 20, "test" + i + "gmail.com");
-      people.add(person );
+      people.add(person);
     }
 
     return people;

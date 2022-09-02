@@ -9,17 +9,20 @@ import ru.springmvc.dao.PersonDAO;
 import ru.springmvc.models.Person;
 
 import javax.validation.Valid;
+import ru.springmvc.util.PersonValidator;
 
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
 
   private final PersonDAO personDAO;
+  private final PersonValidator personValidator;
 
   // DI репозитория DAO сработает внутри контроллера в конструкторе даже
   // без @Autowired
-  public PeopleController(PersonDAO personDAO) {
+  public PeopleController(PersonDAO personDAO, PersonValidator personValidator) {
     this.personDAO = personDAO;
+    this.personValidator = personValidator;
   }
 
   @GetMapping()
@@ -54,6 +57,10 @@ public class PeopleController {
   // @Valid - проверяем на валидацию поля из Person (у которых есть соответсвующие аннотации типа Min и тд)
   // BindingResult - сюда попадают ошибки из @Valid
   public String create(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult) {
+    // @Valid - уже сложил часть ошибок в bindingResult
+    // personValidator.validate еще добавил туда ошибок
+    personValidator.validate(person, bindingResult);
+
     if (bindingResult.hasErrors()) {
       // вернули форму с созданием
       // в ней уже будут ошибки из @Valid Person
@@ -75,6 +82,10 @@ public class PeopleController {
   public String update(@ModelAttribute("person") @Valid Person person,
                        BindingResult bindingResult,
                        @PathVariable("id") int id) {
+    // @Valid - уже сложил часть ошибок в bindingResult
+    // personValidator.validate еще добавил туда ошибок
+    personValidator.validate(person, bindingResult);
+
     if (bindingResult.hasErrors()) {
       return "people/edit";
     }

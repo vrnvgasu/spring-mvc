@@ -18,7 +18,7 @@ public class Person {
   @NotEmpty(message = "Name should not be empty")
   @Size(min = 2, max = 30, message = "Name between 2 and 20")
   private String name;
-  @Min(value = 0, message = "Age >= 0 ")
+  @Min(value = 1, message = "Age >= 1 ")
   private int age;
   @NotEmpty(message = "Email should not be empty")
   @Email // парсит на email регуляркой
