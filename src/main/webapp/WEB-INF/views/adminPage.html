@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add admin</title>
+</head>
+<body>
+
+<form th:method="PATCH" th:action="@{/admin/add}">
+  <label for="person">People</label>
+  <!--th:object="${person}" передали из контроллера в model с помощью @ModelAttribute("person")-->
+  <!--th:field="*{id}" - вернем id для модели Person person-->
+  <select th:object="${person}" th:field="*{id}" id="person">
+    <!--${people} - передали в модель в контролле model.addAttribute("people", personDAO.index());-->
+    <!--person :  ${people} - на каждой итерации помещаем значение в переменную person-->
+    <option th:each="person :  ${people}" th:value="${person.getId()}" th:text="${person.getName()}">
+  </select>
+
+  <input type="submit" value="ADD" />
+</form>
+
+</body>
+</html>
