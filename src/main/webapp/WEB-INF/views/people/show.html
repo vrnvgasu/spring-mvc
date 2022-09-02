@@ -11,6 +11,7 @@
 <p th:text="${person.getAge()}">VALUE</p>
 <p th:text="${person.getEmail()}">VALUE</p>
 <p th:text="${person.getId()}">VALUE</p>
+<p th:text="${person.getAddress()}">VALUE</p>
 <a th:href="@{/people/{id}/edit(id=${person.getId()})}">update</a>
 
 <!--кнопка на удаление в виде формы, тк url ловит запрос на DELETE-->

@@ -8,9 +8,11 @@ package ru.springmvc.models;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 public class Person {
+
   private int id;
 
   // зависимости из hibernate-validator
@@ -18,17 +20,25 @@ public class Person {
   @NotEmpty(message = "Name should not be empty")
   @Size(min = 2, max = 30, message = "Name between 2 and 20")
   private String name;
+
   @Min(value = 1, message = "Age >= 1 ")
   private int age;
+
   @NotEmpty(message = "Email should not be empty")
   @Email // парсит на email регуляркой
   private String email;
 
-  public Person(int id, String name, int age, String email) {
+  // валидный адрес: Страна, Город, индекс(6 цифр)
+  @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
+      message = "Your address should be in this format: Country, City, postal code (6 digits)")
+  private String address;
+
+  public Person(int id, String name, int age, String email, String address) {
     this.id = id;
     this.name = name;
     this.age = age;
     this.email = email;
+    this.address = address;
   }
 
   public Person() {
@@ -66,4 +76,13 @@ public class Person {
   public void setEmail(String email) {
     this.email = email;
   }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
 }

@@ -63,14 +63,14 @@ public class PersonDAO {
 
   public void save(Person person) {
     // update ожидает в качестве параметров в sql - @Nullable Object... args
-    jdbcTemplate.update("INSERT INTO person (name, age, email) VALUES(?, ?, ?)",
-        person.getName(), person.getAge(), person.getEmail()
+    jdbcTemplate.update("INSERT INTO person (name, age, email, address) VALUES(?, ?, ?, ?)",
+        person.getName(), person.getAge(), person.getEmail(), person.getAddress()
     );
   }
 
   public void update(int id, Person updatedPerson) {
-    jdbcTemplate.update("UPDATE person set name=?, age=?, email=? WHERE id=?",
-        updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), id
+    jdbcTemplate.update("UPDATE person set name=?, age=?, email=?, address=? WHERE id=?",
+        updatedPerson.getName(), updatedPerson.getAge(), updatedPerson.getEmail(), updatedPerson.getAddress(), id
     );
   }
 
@@ -124,7 +124,7 @@ public class PersonDAO {
     List<Person> people = new ArrayList<>();
 
     for (int i = 0; i < 1000; i++) {
-      Person person = new Person(i, "Name" + i, 20, "test" + i + "gmail.com");
+      Person person = new Person(i, "Name" + i, 20, "test" + i + "gmail.com", "some address");
       people.add(person);
     }
 

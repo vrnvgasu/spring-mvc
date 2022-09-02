@@ -14,4 +14,6 @@ create table person
     name  varchar NOT NULL,
     age   int CHECK (age > 0),
     email varchar UNIQUE
-)
+);
+
+alter table person add column address varchar not null default 'some address';
