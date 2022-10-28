@@ -1,6 +1,7 @@
 package ru.springmvc.config;
 
 import java.util.Objects;
+import java.util.Properties;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +12,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,7 +27,9 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @Configuration
 @ComponentScan("ru.springmvc")  // пакет с компонентами <context:component-scan base-package="ru.springmvc"/>
 @EnableWebMvc // Включает необходимы аннотации для spring-mvc приложения <mvc:annotation-driven/>
-@PropertySource("classpath:database.properties") // путь до конфигов
+//@PropertySource("classpath:database.properties") // путь до конфигов
+@PropertySource("classpath:hibernate.properties") // путь до конфигов hibernate
+ @EnableTransactionManagement // начинаем и завершаем транзакцию автоматом (не надо явно прописывать)
 public class SpringConfig implements WebMvcConfigurer {
   private final ApplicationContext applicationContext;
 
@@ -63,24 +70,65 @@ public class SpringConfig implements WebMvcConfigurer {
     registry.viewResolver(resolver);
   }
 
-  // Указывает, к какой базе данных подключаться
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     // Objects.requireNonNull выкидываем ошибку, если свойство environment.getProperty("driver") содержит null
-    dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
-    dataSource.setUrl(environment.getProperty("url"));
-    dataSource.setUsername(environment.getProperty("username"));
-    dataSource.setPassword(environment.getProperty("password"));
+    dataSource.setDriverClassName(environment.getRequiredProperty("hibernate.driver_class"));
+    dataSource.setUrl(environment.getRequiredProperty("hibernate.connection.url"));
+    dataSource.setUsername(environment.getRequiredProperty("hibernate.connection.username"));
+    dataSource.setPassword(environment.getRequiredProperty("hibernate.connection.password"));
 
     return dataSource;
   }
 
-  // бин для JdbcTemplate спринга - тонкая обертка JDBC API
-  @Bean
-  public JdbcTemplate jdbcTemplate() {
-    return new JdbcTemplate(dataSource());
+  private Properties hibernateProperties() {
+    Properties properties = new Properties();
+    properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
+    properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
+
+    return properties;
   }
+
+  // создаем сессию для Hibernate
+  @Bean
+  public LocalSessionFactoryBean sessionFactory() {
+    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+    sessionFactory.setDataSource(dataSource());
+    // указываем сущности вместо Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
+    sessionFactory.setPackagesToScan("ru.springmvc.models");
+    sessionFactory.setHibernateProperties(hibernateProperties());
+
+    return sessionFactory;
+  }
+
+  // автоматом делаем транзакции для Hibernate
+  @Bean
+  public PlatformTransactionManager hibernateTransactionManager() {
+    HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+    transactionManager.setSessionFactory(sessionFactory().getObject());
+
+    return transactionManager;
+  }
+
+//  // Указывает, к какой базе данных подключаться
+//  @Bean
+//  public DataSource dataSource() {
+//    DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//    // Objects.requireNonNull выкидываем ошибку, если свойство environment.getProperty("driver") содержит null
+//    dataSource.setDriverClassName(Objects.requireNonNull(environment.getProperty("driver")));
+//    dataSource.setUrl(environment.getProperty("url"));
+//    dataSource.setUsername(environment.getProperty("username"));
+//    dataSource.setPassword(environment.getProperty("password"));
+//
+//    return dataSource;
+//  }
+
+  // бин для JdbcTemplate спринга - тонкая обертка JDBC API
+//  @Bean
+//  public JdbcTemplate jdbcTemplate() {
+//    return new JdbcTemplate(dataSource());
+//  }
 
 }
 

@@ -95,6 +95,21 @@
     </dependency>
 
 
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>5.6.12.Final</version>
+<!--      <version>6.1.4.Final</version> с 5 версией спринга не работет-->
+<!--      <type>pom</type>-->
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>${spring.vesion}</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>

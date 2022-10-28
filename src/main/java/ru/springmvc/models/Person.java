@@ -5,36 +5,50 @@ package ru.springmvc.models;
 //import jakarta.validation.constraints.NotEmpty;
 //import jakarta.validation.constraints.Size;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@Entity
+@Table(name = "person")
 public class Person {
 
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
   // зависимости из hibernate-validator
   // правила валидации будут применятся на форме, т.к. мы передаем через Model объект Person во View
   @NotEmpty(message = "Name should not be empty")
   @Size(min = 2, max = 30, message = "Name between 2 and 20")
+  @Column(name = "name")
   private String name;
 
   @Min(value = 1, message = "Age >= 1 ")
+  @Column(name = "age")
   private int age;
 
   @NotEmpty(message = "Email should not be empty")
   @Email // парсит на email регуляркой
+  @Column(name = "email")
   private String email;
 
   // валидный адрес: Страна, Город, индекс(6 цифр)
   @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
       message = "Your address should be in this format: Country, City, postal code (6 digits)")
+  @Column(name = "address")
   private String address;
 
-  public Person(int id, String name, int age, String email, String address) {
-    this.id = id;
+  public Person(String name, int age, String email, String address) {
     this.name = name;
     this.age = age;
     this.email = email;
