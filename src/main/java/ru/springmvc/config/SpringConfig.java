@@ -10,10 +10,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -30,6 +34,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 //@PropertySource("classpath:database.properties") // путь до конфигов
 @PropertySource("classpath:hibernate.properties") // путь до конфигов hibernate
  @EnableTransactionManagement // начинаем и завершаем транзакцию автоматом (не надо явно прописывать)
+@EnableJpaRepositories("ru.springmvc.repositories") // поддержка JPA репозиториев
 public class SpringConfig implements WebMvcConfigurer {
   private final ApplicationContext applicationContext;
 
@@ -73,7 +78,7 @@ public class SpringConfig implements WebMvcConfigurer {
   @Bean
   public DataSource dataSource() {
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    // Objects.requireNonNull выкидываем ошибку, если свойство environment.getProperty("driver") содержит null
+
     dataSource.setDriverClassName(environment.getRequiredProperty("hibernate.driver_class"));
     dataSource.setUrl(environment.getRequiredProperty("hibernate.connection.url"));
     dataSource.setUsername(environment.getRequiredProperty("hibernate.connection.username"));
@@ -91,22 +96,50 @@ public class SpringConfig implements WebMvcConfigurer {
   }
 
   // создаем сессию для Hibernate
-  @Bean
-  public LocalSessionFactoryBean sessionFactory() {
-    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-    sessionFactory.setDataSource(dataSource());
-    // указываем сущности вместо Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
-    sessionFactory.setPackagesToScan("ru.springmvc.models");
-    sessionFactory.setHibernateProperties(hibernateProperties());
+//  @Bean
+//  public LocalSessionFactoryBean sessionFactory() {
+//    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+//    sessionFactory.setDataSource(dataSource());
+//    // указываем сущности вместо Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
+//    sessionFactory.setPackagesToScan("ru.springmvc.models");
+//    sessionFactory.setHibernateProperties(hibernateProperties());
+//
+//    return sessionFactory;
+//  }
 
-    return sessionFactory;
+  // тоже, что LocalSessionFactoryBean sessionFactory
+  // только sessionFactory реализация entityManagerFactory для Hibernate
+  // а это JPA (Hibernate - одна из реализаций JPA)
+  @Bean
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+    em.setDataSource(dataSource());
+    em.setPackagesToScan("ru.springmvc.models");
+
+    final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+    em.setJpaVendorAdapter(vendorAdapter);
+    em.setJpaProperties(hibernateProperties());
+
+    return em;
   }
 
   // автоматом делаем транзакции для Hibernate
+//  @Bean
+//  public PlatformTransactionManager hibernateTransactionManager() {
+//    HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+//    transactionManager.setSessionFactory(sessionFactory().getObject());
+//
+//    return transactionManager;
+//  }
+
+
+  // тоже, что PlatformTransactionManager hibernateTransactionManager
+  // только hibernateTransactionManager реализация transactionManager для Hibernate
+  // а это JPA (Hibernate - одна из реализаций JPA)
   @Bean
-  public PlatformTransactionManager hibernateTransactionManager() {
-    HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-    transactionManager.setSessionFactory(sessionFactory().getObject());
+  public PlatformTransactionManager transactionManager() {
+    JpaTransactionManager transactionManager = new JpaTransactionManager();
+    transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 
     return transactionManager;
   }
