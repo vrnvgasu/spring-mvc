@@ -39,3 +39,10 @@ insert into item(person_id, item_name)
 values (4, 'Item1'),
        (4, 'Item2'),
        (4, 'TV');
+
+
+--63 Дата и время в Hibernate
+-- дата без времени (2022-10-01)
+alter table person add column date_of_birth date;
+-- точное время
+alter table person add column created_at timestamp;

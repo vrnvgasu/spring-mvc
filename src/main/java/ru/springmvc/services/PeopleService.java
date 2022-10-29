@@ -1,5 +1,6 @@
 package ru.springmvc.services;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class PeopleService {
 
 	@Transactional // переопределили Transactional
 	public void save(Person person) {
+		person.setCreatedAt(new Date());
 		peopleRepository.save(person);
 	}
 
