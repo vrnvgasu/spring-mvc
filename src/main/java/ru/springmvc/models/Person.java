@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -67,6 +69,11 @@ public class Person {
   @Temporal(TemporalType.TIMESTAMP)
   private Date createdAt;
 
+  // EnumType.ORDINAL - берет индекс из enum: 0, 1, 2, ...
+  // EnumType.STRING - сохраняет названия из enum: 'HAPPY', ...
+  @Enumerated(EnumType.ORDINAL) // Hibernate может сохранять enum в БД
+  private Mood mood;
+
   public Person(String name, int age, String email, String address) {
     this.name = name;
     this.age = age;
@@ -76,6 +83,14 @@ public class Person {
 
   public Person() {
 
+  }
+
+  public Mood getMood() {
+    return mood;
+  }
+
+  public void setMood(Mood mood) {
+    this.mood = mood;
   }
 
   public Date getDateOfBirth() {

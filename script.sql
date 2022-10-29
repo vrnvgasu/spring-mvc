@@ -46,3 +46,7 @@ values (4, 'Item1'),
 alter table person add column date_of_birth date;
 -- точное время
 alter table person add column created_at timestamp;
+
+
+--64 Перечисления (Enum) в Hibernate
+alter table person add column mood int;

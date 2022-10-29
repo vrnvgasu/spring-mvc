@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.springmvc.models.Mood;
 import ru.springmvc.models.Person;
 import ru.springmvc.repositories.PeopleRepository;
 
@@ -34,6 +35,7 @@ public class PeopleService {
 	@Transactional // переопределили Transactional
 	public void save(Person person) {
 		person.setCreatedAt(new Date());
+		person.setMood(Mood.CALM);
 		peopleRepository.save(person);
 	}
 
