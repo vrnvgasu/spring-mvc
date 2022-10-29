@@ -34,7 +34,7 @@ public class PeopleService {
 
 	@Transactional // переопределили Transactional
 	public void save(Person person) {
-		person.setCreatedAt(new Date());
+//		person.setCreatedAt(new Date());
 		person.setMood(Mood.CALM);
 		peopleRepository.save(person);
 	}

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.springmvc.dao.PersonDAO;
 import ru.springmvc.models.Person;
 
 import javax.validation.Valid;
@@ -16,7 +17,7 @@ import ru.springmvc.services.PeopleService;
 public class PeopleController {
 
   // работаем с БД через Hibernate
-//  private final PersonDAO personDAO;
+  private final PersonDAO personDAO;
 //  private final PersonValidator personValidator;
 
   // работаем с БД через JPA
@@ -25,7 +26,8 @@ public class PeopleController {
 
   // DI репозитория DAO сработает внутри контроллера в конструкторе даже
   // без @Autowired
-  public PeopleController(PeopleService peopleService, ItemService itemService) {
+  public PeopleController(PersonDAO personDAO, PeopleService peopleService, ItemService itemService) {
+    this.personDAO = personDAO;
     this.peopleService = peopleService;
     this.itemService = itemService;
   }
@@ -36,6 +38,7 @@ public class PeopleController {
     model.addAttribute("people", peopleService.findAll());
 
     peopleService.test();
+    personDAO.testNPlus1();
 
     return "people/index";
   }

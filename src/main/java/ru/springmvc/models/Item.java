@@ -2,6 +2,7 @@ package ru.springmvc.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,11 +24,11 @@ public class Item {
 	private Person owner;
 
 	@Column(name = "item_name")
-	private Long itemName;
+	private String itemName;
 
 	public Item() {}
 
-	public Item(Long itemName) {
+	public Item(String itemName) {
 		this.itemName = itemName;
 	}
 
@@ -47,11 +48,11 @@ public class Item {
 		this.owner = owner;
 	}
 
-	public Long getItemName() {
+	public String getItemName() {
 		return itemName;
 	}
 
-	public void setItemName(Long itemName) {
+	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
 
