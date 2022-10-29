@@ -5,11 +5,14 @@ package ru.springmvc.models;
 //import jakarta.validation.constraints.NotEmpty;
 //import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -48,6 +51,9 @@ public class Person {
   @Column(name = "address")
   private String address;
 
+  @OneToMany(mappedBy = "owner")
+  private List<Item> items;
+
   public Person(String name, int age, String email, String address) {
     this.name = name;
     this.age = age;
@@ -57,6 +63,14 @@ public class Person {
 
   public Person() {
 
+  }
+
+  public List<Item> getItems() {
+    return items;
+  }
+
+  public void setItems(List<Item> items) {
+    this.items = items;
   }
 
   public int getId() {

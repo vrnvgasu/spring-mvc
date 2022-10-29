@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.springmvc.models.Person;
 
 import javax.validation.Valid;
+import ru.springmvc.services.ItemService;
 import ru.springmvc.services.PeopleService;
 
 @Controller
@@ -20,17 +21,22 @@ public class PeopleController {
 
   // работаем с БД через JPA
   private final PeopleService peopleService;
+  private final ItemService itemService;
 
   // DI репозитория DAO сработает внутри контроллера в конструкторе даже
   // без @Autowired
-  public PeopleController(PeopleService peopleService) {
+  public PeopleController(PeopleService peopleService, ItemService itemService) {
     this.peopleService = peopleService;
+    this.itemService = itemService;
   }
 
   @GetMapping()
   // Делаем DI модели
   public String index(Model model) {
     model.addAttribute("people", peopleService.findAll());
+
+    peopleService.test();
+
     return "people/index";
   }
 
